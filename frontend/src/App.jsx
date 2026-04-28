@@ -2,7 +2,10 @@ import { useState } from "react";
 
 // Composant principal de l'application
 function App() {
-  // State pour stocker le titre saisi
+
+  const appName = import.meta.env.VITE_APP_NAME;
+  const apiUrl = import.meta.env.VITE_API_URL;
+// State pour stocker le titre saisi
   const [title, setTitle] = useState("");
 
   // State pour stocker la liste des idées soumises
@@ -17,7 +20,8 @@ function App() {
 
   return (
     <div style={{ maxWidth: "600px", margin: "40px auto", fontFamily: "sans-serif" }}>
-      <h1>Feedback Hub</h1>
+      <h1>{appName}</h1>
+      <h1>{apiUrl}</h1>
 
       {/* Champ de saisie */}
       <input
@@ -31,9 +35,9 @@ function App() {
       {/* Bouton de soumission */}
       <button onClick={handleSubmit} style={{ padding: "8px 16px" }}>
         Submit
+  
       </button>
-
-      {/* Liste des idées soumises */}
+{/* Liste des idées soumises */}
       <ul style={{ marginTop: "24px" }}>
         {ideas.map((idea, index) => (
           <li key={index}>{idea}</li>
