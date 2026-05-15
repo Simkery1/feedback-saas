@@ -315,6 +315,18 @@ function App() {
   const [darkTitle, setDarkTitle] = useState(false);
   const titleRef = useRef(null);
 
+  async function fetchFeedbacks() {
+    const res = await fetch("http://localhost:3000/feedbacks");
+    const data = await res.json();
+    setIdeas(data);
+  }
+
+  useEffect(() => {
+    fetch("http://localhost:3000/feedbacks")
+      .then((res) => res.json())
+      .then(setIdeas);
+  }, []);
+
   // Qualité calculée selon les champs remplis
   const quality = useMemo(() => {
     let score = 0;
@@ -341,18 +353,25 @@ function App() {
     }));
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (form.title.trim() === "") {
       setShake(true);
       setTimeout(() => setShake(false), 500);
       titleRef.current?.focus();
       return;
     }
-    setIdeas((prev) => [{ ...form, id: Date.now(), starred: false }, ...prev]);
-    setForm(EMPTY_FORM);
-    setConfetti(true);
-    setTimeout(() => setConfetti(false), 3000);
-    setShowAdvanced(false);
+    const res = await fetch("http://localhost:3000/feedbacks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: form.title }),
+    });
+    if (res.ok) {
+      await fetchFeedbacks();
+      setForm(EMPTY_FORM);
+      setConfetti(true);
+      setTimeout(() => setConfetti(false), 3000);
+      setShowAdvanced(false);
+    }
   }
 
   function handleRandom() {
